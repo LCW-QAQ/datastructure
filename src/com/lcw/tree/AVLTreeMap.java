@@ -106,7 +106,14 @@ public class AVLTreeMap<K extends Comparable<? super K>, V> implements Iterable<
         while (node != null) {
             final int balanceFactor = getBalanceFactor(node);
             if (balanceFactor > 1) { // 左树不平衡
-                if (node.left.left != null) { // LL
+                if (node.left.right != null) { // LR
+                    rotateLeft(node.left);
+                    rotateRight(node);
+                } else { // LL
+                    rotateRight(node);
+                }
+                // 下面的有问题, 需要判断LR在判断LL, ? 可能是规律, 需要先判断双旋情况
+                /*if (node.left.left != null) { // LL
 //                    node = rightRotate(node);
                     rotateRight(node);
                 } else { // LR
@@ -114,7 +121,7 @@ public class AVLTreeMap<K extends Comparable<? super K>, V> implements Iterable<
 //                    node = rightRotate(node);
                     rotateLeft(node.left);
                     rotateRight(node);
-                }
+                }*/
             } else if (balanceFactor < -1) { // 右树不平衡
                 if (node.right.right != null) { // RR
 //                    node = leftRotate(node);
@@ -122,8 +129,8 @@ public class AVLTreeMap<K extends Comparable<? super K>, V> implements Iterable<
                 } else { // RL
 //                    node.right = rightRotate(node.right);
 //                    node = leftRotate(node);
-                    rightRotate(node.right);
-                    leftRotate(node);
+                    rotateRight(node.right);
+                    rotateLeft(node);
                 }
             }
             node = node.parent;
@@ -332,14 +339,15 @@ public class AVLTreeMap<K extends Comparable<? super K>, V> implements Iterable<
         }
 
         public static void test() {
-            final int ITER_COUNT = 5;
+            final int ITER_COUNT = 10;
             for (int i = 0; i < ITER_COUNT; i++) {
                 final AVLTreeMap<Integer, Integer> tree = new AVLTreeMap<>();
                 final TreeMap<Integer, Integer> treeMap = new TreeMap<>();
                 final Random r = new Random();
-                final List<Integer> samples = Stream.generate(() -> r.nextInt(1000000))
+                final List<Integer> samples = Stream.generate(() -> r.nextInt(100000))
                         .limit(10000).collect(Collectors.toList());
                 samples.forEach(item -> {
+//                    System.out.println(item);
                     tree.put(item, item);
                     treeMap.put(item, item);
                 });
@@ -348,7 +356,7 @@ public class AVLTreeMap<K extends Comparable<? super K>, V> implements Iterable<
                 Iterator<Entry<Integer, Integer>> treeIt = tree.iterator();
                 for (Map.Entry<Integer, Integer> treeMapEntry : treeMapEntrySet) {
                     final Entry<Integer, Integer> treeEntry = treeIt.next();
-                    if (!treeMapEntry.equals(treeEntry)) throw new VerifyError("failed");
+                    if (!(treeMapEntry.getKey().compareTo(treeEntry.getKey()) == 0)) throw new VerifyError("failed");
                 }
                 // 删除元素 再遍历是否一直
                 for (int j = 0; j < samples.size(); j++) {
@@ -358,7 +366,8 @@ public class AVLTreeMap<K extends Comparable<? super K>, V> implements Iterable<
                     treeIt = tree.iterator();
                     for (Map.Entry<Integer, Integer> treeMapEntry : treeMapEntrySet) {
                         final Entry<Integer, Integer> treeEntry = treeIt.next();
-                        if (!treeMapEntry.equals(treeEntry)) throw new VerifyError("failed");
+                        if (!(treeMapEntry.getKey().compareTo(treeEntry.getKey()) == 0))
+                            throw new VerifyError("failed");
                     }
                 }
             }
@@ -366,7 +375,27 @@ public class AVLTreeMap<K extends Comparable<? super K>, V> implements Iterable<
             System.out.println("success!");
         }
 
-        public void test_10demo() {
+        public static void test_demo() {
+            final AVLTreeMap<Integer, Object> tree = new AVLTreeMap<>();
+            tree.put(1, 1);
+            tree.put(8, 8);
+            tree.put(5, 5);
+            tree.put(8, 8);
+            tree.put(1, 1);
+            tree.put(1, 1);
+            tree.put(8, 8);
+            tree.put(0, 0);
+            tree.put(8, 8);
+            tree.put(5, 5);
+            tree.put(1, 1);
+            tree.put(0, 0);
+            tree.put(2, 2);
+            tree.put(1, 1);
+            tree.put(3, 3);
+            System.out.println("hello");
+        }
+
+        public static void test_10demo() {
             final AVLTreeMap<Integer, Integer> map = new AVLTreeMap<>();
             for (int i = 0; i <= 10; i++) {
                 map.put(i, i);
