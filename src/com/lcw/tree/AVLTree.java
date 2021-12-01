@@ -278,7 +278,7 @@ public class AVLTree<T extends Comparable<? super T>> implements Iterable<T> {
                         throw new VerifyError("failed");
                     }
                 }
-                // 删除元素 再遍历是否一直
+                // 删除元素 再遍历是否一致
                 for (int j = 0; j < samples.size(); j++) {
                     tree.remove(j);
                     treeSet.remove(j);

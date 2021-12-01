@@ -23,7 +23,37 @@ public class AVLTreeMap<K extends Comparable<? super K>, V> implements Iterable<
     }
 
     public boolean containsValue(Object value) {
+        // 可以直接用iterator迭代寻找
+
+        // 下面的循环是先找到第一个节点(根节点左边最小值), 然后不停的找后继节点(中序遍历的下一个节点)比对, 相当于在中序遍历, 与iterator没什么区别
+        for (Entry<K, V> entry = findMin(root); entry != null; entry = successor(entry)) {
+            if (Objects.equals(value, entry.value))
+                return true;
+        }
         return false;
+    }
+
+    private Entry<K, V> successor(Entry<K, V> entry) {
+        if (entry == null) {
+            return null;
+        } else if (entry.right != null) { // 右边有节点, 那么后继节点肯定在右边的最左边
+            var cur = entry.right;
+            while (cur.left != null) {
+                cur = cur.left;
+            }
+            return cur;
+        } else {
+            // 右边为null
+            // 1.如果当前节点是父节点的左子节点, 那么父节点就是后继节点
+            // 2.如果当前节点是父节点的右子节点, 那么需要一直向上找, 直到找到一个不是父节点的右子节点的值
+            var p = entry.parent;
+            var cur = entry;
+            while (p != null && p.right == cur) {
+                cur = p;
+                p = p.parent;
+            }
+            return p;
+        }
     }
 
     public V get(Object key) {
@@ -114,21 +144,15 @@ public class AVLTreeMap<K extends Comparable<? super K>, V> implements Iterable<
                 }
                 // 下面的有问题, 需要判断LR在判断LL, ? 可能是规律, 需要先判断双旋情况
                 /*if (node.left.left != null) { // LL
-//                    node = rightRotate(node);
                     rotateRight(node);
                 } else { // LR
-//                    node.left = leftRotate(node.left);
-//                    node = rightRotate(node);
                     rotateLeft(node.left);
                     rotateRight(node);
                 }*/
             } else if (balanceFactor < -1) { // 右树不平衡
                 if (node.right.right != null) { // RR
-//                    node = leftRotate(node);
                     rotateLeft(node);
                 } else { // RL
-//                    node.right = rightRotate(node.right);
-//                    node = leftRotate(node);
                     rotateRight(node.right);
                     rotateLeft(node);
                 }
@@ -137,48 +161,47 @@ public class AVLTreeMap<K extends Comparable<? super K>, V> implements Iterable<
         }
     }
 
-    private Entry<K, V> rightRotate(Entry<K, V> node) {
-        var newEntry = node.left;
-
-        node.left = newEntry.right;
-        newEntry.right = node;
-
-        node.height = getHeight(node);
-        newEntry.height = getHeight(newEntry);
-
-        return newEntry;
-    }
-
-    private Entry<K, V> leftRotate(Entry<K, V> node) {
-        var newEntry = node.right;
-
-        node.right = newEntry.left;
-        newEntry.left = node;
-
-        node.height = getHeight(node);
-        newEntry.height = getHeight(newEntry);
-
-        return newEntry;
-    }
-
+    /**
+     * 左旋
+     * A                             B
+     * \                           / \
+     * B            ===>         A   C
+     * \
+     * C
+     *
+     * @param node
+     */
     private void rotateLeft(Entry<K, V> node) {
         if (node != null) {
+            // 根节点的右边是新的根节点
             Entry<K, V> newEntry = node.right;
             node.right = newEntry.left;
-            if (newEntry.left != null)
+            if (newEntry.left != null) {
+                // 根节点的右子节点的左边现在移动到了根节点下面, 更新parent
                 newEntry.left.parent = node;
+            }
+            // 新根节点替代了根节点, 更新parent
             newEntry.parent = node.parent;
-            if (node.parent == null)
+            if (node.parent == null) {
+                // parent为null 说明旋转的节点是根节点, 更新root
                 root = newEntry;
+            }
+            // 判断根节点是根节点的父节点的左子树还是右子树, 更新父节点的指针
             else if (node.parent.left == node)
                 node.parent.left = newEntry;
             else
                 node.parent.right = newEntry;
             newEntry.left = node;
+            // 根节点的父节点是新根节点, 更新
             node.parent = newEntry;
         }
     }
 
+    /**
+     * 右旋
+     *
+     * @param node
+     */
     private void rotateRight(Entry<K, V> node) {
         if (node != null) {
             Entry<K, V> newEntry = node.left;
@@ -211,6 +234,7 @@ public class AVLTreeMap<K extends Comparable<? super K>, V> implements Iterable<
         Entry<K, V> entry = getEntry(key);
         if (entry == null) return null;
 
+        // 删除指定节点
         deleteEntry(entry);
         return entry.value;
     }
@@ -366,7 +390,8 @@ public class AVLTreeMap<K extends Comparable<? super K>, V> implements Iterable<
                     treeIt = tree.iterator();
                     for (Map.Entry<Integer, Integer> treeMapEntry : treeMapEntrySet) {
                         final Entry<Integer, Integer> treeEntry = treeIt.next();
-                        if (!(treeMapEntry.getKey().compareTo(treeEntry.getKey()) == 0))
+                        if (!(treeMapEntry.getKey().compareTo(treeEntry.getKey()) == 0) &&
+                            tree.containsValue(j + 1) == treeMap.containsValue(j + 1))
                             throw new VerifyError("failed");
                     }
                 }
@@ -399,6 +424,9 @@ public class AVLTreeMap<K extends Comparable<? super K>, V> implements Iterable<
             final AVLTreeMap<Integer, Integer> map = new AVLTreeMap<>();
             for (int i = 0; i <= 10; i++) {
                 map.put(i, i);
+            }
+            for (int i = 0; i < 10; i++) {
+                System.out.println(map.containsValue(i));
             }
             map.forEach(item -> {
                 System.out.printf("%s ", item.getKey());
