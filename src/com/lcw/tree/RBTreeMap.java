@@ -4,7 +4,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class AVLTreeMap<K extends Comparable<? super K>, V> implements Iterable<AVLTreeMap.Entry<K, V>> {
+public class RBTreeMap<K extends Comparable<? super K>, V> implements Iterable<RBTreeMap.Entry<K, V>> {
 
     private Entry<K, V> root;
 
@@ -365,7 +365,7 @@ public class AVLTreeMap<K extends Comparable<? super K>, V> implements Iterable<
         public static void test() {
             final int ITER_COUNT = 10;
             for (int i = 0; i < ITER_COUNT; i++) {
-                final AVLTreeMap<Integer, Integer> tree = new AVLTreeMap<>();
+                final RBTreeMap<Integer, Integer> tree = new RBTreeMap<>();
                 final TreeMap<Integer, Integer> treeMap = new TreeMap<>();
                 final Random r = new Random();
                 final List<Integer> samples = Stream.generate(() -> r.nextInt(100000))
@@ -382,7 +382,7 @@ public class AVLTreeMap<K extends Comparable<? super K>, V> implements Iterable<
                     final Entry<Integer, Integer> treeEntry = treeIt.next();
                     if (!(treeMapEntry.getKey().compareTo(treeEntry.getKey()) == 0)) throw new VerifyError("failed");
                 }
-                // 删除元素 再遍历是否一直
+                // 删除元素 再遍历是否一致
                 for (int j = 0; j < samples.size(); j++) {
                     tree.remove(j);
                     treeMap.remove(j);
@@ -401,7 +401,7 @@ public class AVLTreeMap<K extends Comparable<? super K>, V> implements Iterable<
         }
 
         public static void test_demo() {
-            final AVLTreeMap<Integer, Object> tree = new AVLTreeMap<>();
+            final RBTreeMap<Integer, Object> tree = new RBTreeMap<>();
             tree.put(1, 1);
             tree.put(8, 8);
             tree.put(5, 5);
@@ -421,7 +421,7 @@ public class AVLTreeMap<K extends Comparable<? super K>, V> implements Iterable<
         }
 
         public static void test_10demo() {
-            final AVLTreeMap<Integer, Integer> map = new AVLTreeMap<>();
+            final RBTreeMap<Integer, Integer> map = new RBTreeMap<>();
             for (int i = 0; i <= 10; i++) {
                 map.put(i, i);
             }
