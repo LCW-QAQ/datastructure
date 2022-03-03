@@ -10,7 +10,7 @@ object Main {
             tree.put(i, i.toString())
         }
         while (tree.size() > 0) {
-            tree.remvoe(tree.size() - 1)
+            tree.remove(tree.size() - 1)
         }
         println("may be success")
     }

@@ -105,7 +105,7 @@ public class RBTree<K extends Comparable<? super K>, V> implements Iterable<RBTr
         root.color = BLACK;
     }
 
-    public V remvoe(Object key) {
+    public V remove(Object key) {
         final Entry<K, V> entry = getEntry(key);
         if (entry == null) return null;
 
