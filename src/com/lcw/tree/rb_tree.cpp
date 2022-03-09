@@ -188,7 +188,7 @@ Node* afterEraseFix(Node* root) {
     // 将左子树双重黑减掉
     root->left->color -= 1;
     root = leftRotate(root);
-    // 将旋转后的根节点的颜色变成黑色
+    // 将旋转后的根节点的孩子节点的颜色变成黑色
     root->left->color = root->right->color = BLACK;
   } else {
     // 右子树是双重黑
@@ -232,7 +232,7 @@ Node* afterEraseFix(Node* root) {
     // 将右子树双重黑减掉
     root->right->color -= 1;
     root = rightRotate(root);
-    // 将旋转后的根节点的颜色变成黑色
+    // 将旋转后的根节点的孩子节点的颜色变成黑色
     root->left->color = root->right->color = BLACK;
   }
   return root;
