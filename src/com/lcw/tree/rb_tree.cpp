@@ -8,7 +8,7 @@ using namespace std;
 2. 每个节点非黑即红
 3. 叶子结点都是黑色(叶子结点值得是NULL节点)
 4. 不能有两个连续的红色节点, 即红色节点的直接子节点必须是黑色
-5. 从根节点触发到所有叶子节点路径上的黑色节点数量相同
+5. 从根节点出发到所有叶子节点路径上的黑色节点数量相同
 */
 
 enum Color { RED = 0, BLACK, DOUBLE_BLACK };
@@ -85,20 +85,20 @@ Node* afterInsertFix(Node* root) {
   // 运行到这里说只有一个红色的子节点
   // 判断是L还是R类型的失衡
   if (root->left->color == RED) {
-    // R类型失衡
+    // L类型失衡
     // 没有红色子节点就不会失衡, 即没有两个连着的红色节点
     if (!hasRedChild(root->left)) return root;
-    // RL类型
+    // LR类型
     if (root->left->right->color == RED) {
       root->left = leftRotate(root->left);
     }
     root = rightRotate(root);
     goto red_rise;
   } else {
-    // L类型失衡
+    // R类型失衡
     // 没有红色子节点就不会失衡, 即没有两个连着的红色节点
     if (!hasRedChild(root->right)) return root;
-    // LR类型
+    // RL类型
     if (root->right->left->color == RED) {
       root->right = rightRotate(root->right);
     }
