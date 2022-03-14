@@ -1,7 +1,9 @@
 package com.lcw.hash;
 
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 /**
  * @author liuchongwei
@@ -88,7 +90,7 @@ public class MyHashtable<K, V> implements Map<K, V> {
 
     @Override
     public boolean containsKey(Object key) {
-        return false;
+        return getNode(key) != null;
     }
 
     @Override
@@ -292,6 +294,36 @@ public class MyHashtable<K, V> implements Map<K, V> {
 
     @Override
     public V remove(Object key) {
+        final Node<K, V> node = removeNode(hash(key), key);
+        return node == null ? null : node.val;
+    }
+
+    /**
+     * 删除给定key节点
+     */
+    private Node<K, V> removeNode(int hash, Object key) {
+        Node<K, V>[] tab;
+        Node<K, V> e;
+        int n, i;
+        if ((tab = table) != null && (n = table.length) > 0 && (e = tab[(i = (n - 1) & hash)]) != null) {
+            Node<K, V> node = null, pre = e;
+            do {
+                if (e.hash == hash && Objects.equals(e.key, key)) {
+                    node = e;
+                    break;
+                }
+                pre = e;
+            } while ((e = e.next) != null);
+            // 找到要删除的节点了
+            if (node != null) {
+                if (node == pre) {
+                    tab[i] = node.next;
+                } else {
+                    pre.next = node.next;
+                }
+                size--;
+            }
+        }
         return null;
     }
 
@@ -302,7 +334,11 @@ public class MyHashtable<K, V> implements Map<K, V> {
 
     @Override
     public void clear() {
-
+        Node<K, V>[] tab;
+        if ((tab = table) != null && size > 0) {
+            size = 0;
+            Arrays.fill(tab, null);
+        }
     }
 
     @Override
@@ -326,13 +362,26 @@ public class MyHashtable<K, V> implements Map<K, V> {
         return key == null ? 0 : (h = key.hashCode()) ^ (h >> 16);
     }
 
-    public static void main(String[] args) {
-        final Map<Integer, Integer> map = new MyHashtable<>();
-        for (int i = 0; i < 1000; i++) {
-            map.put(i, i);
+    public static void main(String[] args) throws Exception {
+        final Map<Double, Double> map = new MyHashtable<>();
+        final List<Double> randomNums = Stream.generate(Math::random)
+                .limit(1000)
+                .collect(Collectors.toList());
+        for (Double num : randomNums) {
+            map.put(num, num);
         }
-        for (int i = 0; i < 1000; i++) {
-            System.out.println(map.get(i));
+
+        System.out.println(map.containsKey(randomNums.get(100)));
+        map.remove(randomNums.get(100));
+        System.out.println(map.containsKey(randomNums.get(100)));
+
+        for (Double num : randomNums) {
+            if (Objects.equals(num, randomNums.get(100))) {
+                continue;
+            }
+            if (!map.containsKey(num)) {
+                throw new Exception();
+            }
         }
     }
 }
