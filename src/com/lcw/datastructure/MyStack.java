@@ -1,4 +1,4 @@
-package com.lcw;
+package com.lcw.datastructure;
 
 public class MyStack<E> {
     private Object[] elements;

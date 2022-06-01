@@ -1,4 +1,4 @@
-package com.lcw.tree.notok;
+package com.lcw.datastructure.tree.notok;
 
 public class AVLTreeNotOkYet2<T extends Comparable<T>> {
 

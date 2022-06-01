@@ -1,8 +1,7 @@
-package com.lcw.hash;
+package com.lcw.datastructure.hash;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 /**

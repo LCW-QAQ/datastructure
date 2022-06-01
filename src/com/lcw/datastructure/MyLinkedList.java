@@ -1,4 +1,4 @@
-package com.lcw;
+package com.lcw.datastructure;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;

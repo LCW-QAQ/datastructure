@@ -1,4 +1,4 @@
-package com.lcw.tree;
+package com.lcw.datastructure.tree;
 
 import java.util.*;
 import java.util.stream.Collectors;

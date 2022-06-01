@@ -1,4 +1,4 @@
-package com.lcw.tree.notok;
+package com.lcw.datastructure.tree.notok;
 
 public class AVLTreeOther {
 

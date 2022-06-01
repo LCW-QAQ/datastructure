@@ -1,4 +1,4 @@
-package com.lcw.tree.notok;
+package com.lcw.datastructure.tree.notok;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;

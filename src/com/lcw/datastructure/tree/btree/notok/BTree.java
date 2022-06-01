@@ -1,4 +1,4 @@
-package com.lcw.tree.btree.notok;
+package com.lcw.datastructure.tree.btree.notok;
 
 import java.util.LinkedList;
 import java.util.Queue;

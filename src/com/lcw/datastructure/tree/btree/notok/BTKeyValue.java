@@ -1,4 +1,4 @@
-package com.lcw.tree.btree.notok;
+package com.lcw.datastructure.tree.btree.notok;
 
 //键值对 就是关键字
 public class BTKeyValue<K extends Comparable<K>, V> {

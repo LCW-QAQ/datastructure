@@ -1,6 +1,6 @@
-package com.lcw.tree.notok;
+package com.lcw.datastructure.tree.notok;
 
-import com.lcw.tree.AVLTree;
+import com.lcw.datastructure.tree.AVLTree;
 
 import java.util.*;
 import java.util.stream.Collectors;

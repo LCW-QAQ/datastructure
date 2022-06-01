@@ -1,4 +1,4 @@
-package com.lcw.tree.btree.notok;
+package com.lcw.datastructure.tree.btree.notok;
 //Comparable�˽ӿ�ǿ�ж�ʵ������ÿ����Ķ��������������
 public class BTNode<K extends Comparable<K>, V> {
 
